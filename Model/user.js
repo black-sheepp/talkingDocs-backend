@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema(
 		},
 		phone: {
 			type: String,
-			maxLength: [10, "Please enter a valid phone number"],
+			maxLength: [15, "Please enter a valid phone number"],
 		},
 		bio: {
 			type: String,

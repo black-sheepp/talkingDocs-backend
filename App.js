@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 const App = express();
 const env = require('dotenv').config()
 const port = process.env.PORT;
@@ -11,6 +12,7 @@ App.use(bodyParser.json());
 App.use(bodyParser.urlencoded({ extended: true }));
 App.use(cookieParser());
 App.use(express.static('./Public'))
+App.use(cors());
 
 
 
