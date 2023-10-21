@@ -8,9 +8,9 @@ const generateToken = (id) => {
 let verifyToken = "";
 
 module.exports.signUp = async function (req, res) {
-	const { name, email, password, phone, bio } = req.body;
+	const { name, email, password, linkedIn, github } = req.body;
 
-	if (!email || !password || !phone || !bio || !name) {
+	if (!email || !password || !linkedIn || !github || !name) {
 		return res.status(403).json({ message: "Please enter all details." });
 	}
 
@@ -27,8 +27,8 @@ module.exports.signUp = async function (req, res) {
 		name: name,
 		email: email,
 		password: password,
-		phone: phone,
-		bio: bio,
+		github: github,
+		linkedIn: linkedIn,
 	});
 
 	// generate token
@@ -45,13 +45,13 @@ module.exports.signUp = async function (req, res) {
 	});
 
 	if (user) {
-		const { _id, name, email, phone, bio } = user;
+		const { _id, name, email, linkedIn, github } = user;
 		return res.status(200).json({
 			_id,
 			name,
 			email,
-			phone,
-			bio,
+			github,
+			linkedIn,
 			token,
 		});
 	}
@@ -89,13 +89,13 @@ module.exports.signIn = async function (req, res) {
 		});
 
 		if (userExists && correctPassword) {
-			const { _id, name, email, phone, bio } = user;
+			const { _id, name, email, linkedIn, github } = user;
 			return res.status(200).json({
 				_id,
 				name,
 				email,
-				phone,
-				bio,
+				github,
+				linkedIn,
 				token,
 			});
 		} else {

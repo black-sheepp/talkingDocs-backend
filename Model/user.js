@@ -25,13 +25,13 @@ const userSchema = mongoose.Schema(
 			required: [true, "Please enter a valid password"],
 			minLength: [6, "Please enter a valid password with at least 6 characters"],
 		},
-		phone: {
+		github: {
 			type: String,
-			maxLength: [15, "Please enter a valid phone number"],
+			maxLength: [250, "Please enter your github url max of 250 characters"],
 		},
-		bio: {
+		linkedIn: {
 			type: String,
-			maxLength: [250, "Please enter your bio max of 250 characters"],
+			maxLength: [250, "Please enter your linkedIn url max of 250 characters"],
 		},
 		pdf_location: {
 			type: String,

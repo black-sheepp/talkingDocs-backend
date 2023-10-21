@@ -1,4 +1,6 @@
 const User = require("../Model/user");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.pdfUpload = async function (req, res) {
 	console.log(req.params.id)
@@ -11,10 +13,15 @@ module.exports.pdfUpload = async function (req, res) {
 		}
 
 		if(req.file){
-			user.pdf_location = user.pdf_path + "/" + req.file.filename;
+			if(user.pdf_location){
+				fs.unlinkSync(path.join(__dirname, '..', "/Public/Upload", user.pdf_location));
+			}
+			user.pdf_location = "/" + req.file.filename;
 		}
 		user.save();
 		console.log(req.file);
 		return res.status(200).json({message: "File uploaded successfully"});
 	})
 };
+
+
