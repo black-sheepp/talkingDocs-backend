@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const generateToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "2d" });
 };
+let verifyToken = "";
 
 module.exports.signUp = async function (req, res) {
 	const { name, email, password, phone, bio } = req.body;
@@ -32,8 +33,9 @@ module.exports.signUp = async function (req, res) {
 
 	// generate token
 	const token = generateToken(user._id);
+	verifyToken = token;
 
-	// send http-only cookie as response to bearer side
+	// send http-only cookie as response to bearer side _ postman testing
 	res.cookie("token", token, {
 		path: "/",
 		httpOnly: true,
@@ -43,8 +45,9 @@ module.exports.signUp = async function (req, res) {
 	});
 
 	if (user) {
-		const { name, email, phone, bio } = user;
+		const { _id, name, email, phone, bio } = user;
 		return res.status(200).json({
+			_id,
 			name,
 			email,
 			phone,
@@ -74,6 +77,7 @@ module.exports.signIn = async function (req, res) {
 
 		// generate token
 		const token = generateToken(user._id);
+		verifyToken = token;
 
 		// send http-only cookie as response to bearer side
 		res.cookie("token", token, {
@@ -85,8 +89,9 @@ module.exports.signIn = async function (req, res) {
 		});
 
 		if (userExists && correctPassword) {
-			const { name, email, phone, bio } = user;
+			const { _id, name, email, phone, bio } = user;
 			return res.status(200).json({
+				_id,
 				name,
 				email,
 				phone,
@@ -109,4 +114,9 @@ module.exports.logout = async function (req, res) {
 		secure: true,
 	});
 	return res.status(200).json({ message: "User logged Out successfully" });
+};
+
+module.exports.getToken = async function (req, res) {
+	console.log(verifyToken);
+	return res.status(200).end(verifyToken);
 };

@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const multer = require("multer");
+const path = require("path");
+const PDF_PATH = path.join("/Public/Upload");
 
 const userSchema = mongoose.Schema(
 	{
@@ -9,7 +12,7 @@ const userSchema = mongoose.Schema(
 		},
 		email: {
 			type: String,
-			required: [true, "Please enter an email address"], 
+			required: [true, "Please enter an email address"],
 			unique: true,
 			trim: true,
 			match: [
@@ -30,15 +33,31 @@ const userSchema = mongoose.Schema(
 			type: String,
 			maxLength: [250, "Please enter your bio max of 250 characters"],
 		},
+		pdf_location: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,
 	}
 );
 
+// Define the storage for uploaded files
+let storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, path.join(__dirname, "..", PDF_PATH)); 
+	},
+	filename: function (req, file, cb) {
+		cb(null, Date.now() + "_" + file.originalname);
+	},
+});
+
+userSchema.statics.uploadedPDF = multer({storage: storage}).single('pdf_location');
+userSchema.statics.pdf_path = PDF_PATH;
+
 // encrypt the password before saving to the database
-userSchema.pre('save', async function(next){
-	if(!this.isModified('password')){
+userSchema.pre("save", async function (next) {
+	if (!this.isModified("password")) { 
 		return next();
 	}
 	// hash the password
@@ -46,7 +65,7 @@ userSchema.pre('save', async function(next){
 	const hashPassword = await bcrypt.hash(this.password, salt);
 	this.password = hashPassword;
 	next();
-})
+});
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
